@@ -1,63 +1,22 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { FaCheckCircle } from "react-icons/fa";
-import { toast } from "react-toastify";
+useEffect(() => {
+  const activatePro = async () => {
+    try {
+      await upgradeUser();
 
-import { upgradeUser } from "../services/paymentService";
+      toast.success("TaskFlow Pro Activated!");
 
-import "../App.css";
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 2500);
 
-const Success = () => {
-  const navigate = useNavigate();
+    } catch (error) {
+      console.log(
+      error.response?.data || error.message
+     );
+     toast.error("Failed to activate Pro Plan");
+     }
+  };
 
-  useEffect(() => {
-    const activatePro = async () => {
-      try {
-        await upgradeUser();
+  activatePro();
 
-        toast.success("TaskFlow Pro Activated!");
-
-        setTimeout(() => {
-          navigate("/dashboard");
-        }, 2500);
-      } catch (error) {
-        toast.error("Failed to activate Pro Plan");
-      }
-    };
-
-    activatePro();
-  }, [navigate]);
-
-  return (
-    <div className="success-page">
-      <div className="success-card">
-
-        <div className="success-icon">
-          <FaCheckCircle />
-        </div>
-
-        <h1>Payment Successful 🎉</h1>
-
-        <p>
-          Thank you for upgrading to
-          <strong> TaskFlow Pro</strong>.
-        </p>
-
-        <p className="success-small">
-          Your subscription has been activated successfully.
-          Redirecting to your dashboard...
-        </p>
-
-        <button
-          className="primary-btn"
-          onClick={() => navigate("/dashboard")}
-        >
-          Go to Dashboard
-        </button>
-
-      </div>
-    </div>
-  );
-};
-
-export default Success;
+}, [navigate]);
