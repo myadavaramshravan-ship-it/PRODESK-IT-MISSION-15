@@ -31,7 +31,14 @@ const TaskForm = ({ onTaskCreated }) => {
         status: "Pending",
       });
     } catch (err) {
-      toast.error(err.response?.data?.message || "Task creation failed");
+  console.log("Create Task Error:", err);
+
+  if (err.response) {
+    console.log("Status:", err.response.status);
+    console.log("Data:", err.response.data);
+  }
+
+  toast.error(err.response?.data?.message || "Task creation failed");
     }
   };
 

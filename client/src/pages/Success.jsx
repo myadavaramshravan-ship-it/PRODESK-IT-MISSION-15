@@ -1,111 +1,63 @@
-import React,{useEffect} from "react";
-import axios from "axios";
-import {useNavigate} from "react-router-dom";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { FaCheckCircle } from "react-icons/fa";
+import { toast } from "react-toastify";
 
-import {useAuth} from "../context/AuthContext";
+import { upgradeUser } from "../services/paymentService";
 
+import "../App.css";
 
+const Success = () => {
+  const navigate = useNavigate();
 
-function Success(){
+  useEffect(() => {
+    const activatePro = async () => {
+      try {
+        await upgradeUser();
 
+        toast.success("TaskFlow Pro Activated!");
 
-const navigate = useNavigate();
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 2500);
+      } catch (error) {
+        toast.error("Failed to activate Pro Plan");
+      }
+    };
 
-const {fetchUser} = useAuth();
+    activatePro();
+  }, [navigate]);
 
+  return (
+    <div className="success-page">
+      <div className="success-card">
 
+        <div className="success-icon">
+          <FaCheckCircle />
+        </div>
 
+        <h1>Payment Successful 🎉</h1>
 
-useEffect(()=>{
+        <p>
+          Thank you for upgrading to
+          <strong> TaskFlow Pro</strong>.
+        </p>
 
+        <p className="success-small">
+          Your subscription has been activated successfully.
+          Redirecting to your dashboard...
+        </p>
 
-const activatePro = async()=>{
+        <button
+          className="primary-btn"
+          onClick={() => navigate("/dashboard")}
+        >
+          Go to Dashboard
+        </button>
 
-
-try{
-
-
-const token =
-localStorage.getItem("token");
-
-
-
-await axios.post(
-
-
-"http://localhost:5000/api/payment/upgrade",
-
-
-{},
-
-
-{
-headers:{
-Authorization:`Bearer ${token}`
-}
-}
-
-
-);
-
-
-
-// refresh user data
-
-await fetchUser();
-
-
-
-navigate("/dashboard");
-
-
-
-}catch(error){
-
-
-console.log(error);
-
-
-}
-
-
-
+      </div>
+    </div>
+  );
 };
-
-
-
-activatePro();
-
-
-
-},[]);
-
-
-
-
-
-return(
-
-<div>
-
-
-<h1>
-Payment Successful 🎉
-</h1>
-
-
-<p>
-Activating TaskFlow Pro...
-</p>
-
-
-</div>
-
-
-);
-
-
-}
-
 
 export default Success;
