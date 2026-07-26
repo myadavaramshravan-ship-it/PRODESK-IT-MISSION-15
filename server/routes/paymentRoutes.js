@@ -1,38 +1,26 @@
-const express=require("express");
+const express = require("express");
+const router = express.Router();
 
-const router=express.Router();
-
-
-const {
-createCheckoutSession
-}
-=require("../controllers/paymentController");
-
+const auth = require("../middleware/authMiddleware");
 
 const {
-upgradeUser
-}
-=require("../controllers/upgradeController");
+  createCheckoutSession,
+} = require("../controllers/paymentController");
 
-
-const auth=
-require("../middleware/authMiddleware");
-
-
+const {
+  upgradeUser,
+} = require("../controllers/upgradeController");
 
 router.post(
-"/create-checkout-session",
-createCheckoutSession
+  "/create-checkout-session",
+  auth,
+  createCheckoutSession
 );
-
-
 
 router.post(
-"/upgrade",
-auth,
-upgradeUser
+  "/upgrade",
+  auth,
+  upgradeUser
 );
 
-
-
-module.exports=router;
+module.exports = router;
