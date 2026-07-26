@@ -1,66 +1,55 @@
 import {
-createContext,
-useContext,
-useEffect,
-useState
+  createContext,
+  useContext,
+  useEffect,
+  useState,
 } from "react";
 
-import axios from "axios";
+import API from "../services/api";
 
-const AuthContext=createContext();
-export const AuthProvider=({children})=>{
-const [user,setUser]=useState(null);
+const AuthContext = createContext();
 
-const fetchUser=async()=>{
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
 
- const token =
-localStorage.getItem("token");
-if(!token)return;
+  const fetchUser = async () => {
+    const token = localStorage.getItem("token");
 
-try{
-const res =
-await axios.get(
-"http://localhost:5000/api/auth/me",
+    if (!token) return;
 
-{
+    try {
+      const res = await API.get("/auth/me");
 
-headers:{
+      setUser(res.data);
+    } catch (error) {
+      console.log(error);
 
-Authorization:`Bearer ${token}`
-}
-}
-);
+      localStorage.removeItem("token");
+      setUser(null);
+    }
+  };
 
-setUser(res.data);
-}catch(error){
-console.log(error);
-}
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        setUser,
+        fetchUser,
+        logout,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
-useEffect(()=>{
-fetchUser();
-},[]);
-
-const logout=()=>{
-
-localStorage.removeItem("token");
-
-setUser(null);
-
-};
-
-return(
-<AuthContext.Provider
-value={{
-user,
-logout,
-fetchUser
-}}
->
-{children}
-</AuthContext.Provider>
-
-);
-
-};
-export const useAuth=()=>useContext(AuthContext);
+export const useAuth = () => useContext(AuthContext);
