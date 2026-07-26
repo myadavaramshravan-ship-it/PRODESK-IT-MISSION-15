@@ -36,7 +36,7 @@ connectDB();
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://YOUR-VERCEL-APP.vercel.app",
+  "https://prodesk-it-mission-15.vercel.app/",
 ];
 
 app.use(
